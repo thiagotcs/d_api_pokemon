@@ -22,37 +22,46 @@ import axios from "axios";
  * se puder ordene por nome
  */
 
-// ! 2 resolução do desafio
+// ! 3 resolução do desafio IA
 function App() {
-  const [list, setList] = useState([]);
+  const [pokemonList, setPokemonList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchApiData = () => {
-    axios.get("https://pokeapi.co/api/v2/pokemon").then(res => {
-      const sortedArray = [...res.data.results];
+  const fetchPokemonData = async () => {
+    try {
+      const response = await axios.get("https://pokeapi.co/api/v2/pokemon");
+
+      const sortedArray = [...response.data.results];
 
       sortedArray.sort((a, b) => {
         return a.name.localeCompare(b.name);
       });
+
       const promisesArray = sortedArray.map(item => axios.get(item.url));
 
-      Promise.all(promisesArray).then(value => setList(value));
-    });
-  };
+      const pokemonDetails = await Promise.all(promisesArray);
 
+      setPokemonList(pokemonDetails);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    fetchApiData();
+    fetchPokemonData();
   }, []);
   return (
     <>
       <h3>Desafio Thiago</h3>
       <h1>Consumir api Pokémon</h1>
       <hr />
-      {list.length === 0
+      {loading
         ? "carregando Pokémon..."
-        : list.map(item => {
+        : pokemonList.map(pokemon => {
             return (
               <div
-                key={item.data.name}
+                key={pokemon.data.name}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -63,13 +72,14 @@ function App() {
               >
                 <span>
                   <img
-                    src={item.data.sprites.front_default}
-                    alt={item.data.name}
+                    src={pokemon.data.sprites.front_default}
+                    alt={pokemon.data.name}
                     style={{ width: 50, marginLeft: 20 }}
                   />
                 </span>
                 <span>
-                  <b>{item.data.name}</b> - EXP {item.data.base_experience}
+                  <b>{pokemon.data.name}</b> - EXP{" "}
+                  {pokemon.data.base_experience}
                 </span>
               </div>
             );
