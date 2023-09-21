@@ -22,45 +22,41 @@ import axios from "axios";
  * se puder ordene por nome
  */
 
-// ! 1 resolução do desafio
+// ! 2 resolução do desafio
 function App() {
   const [list, setList] = useState([]);
 
-  useEffect(() => {
+  const fetchApiData = () => {
     axios.get("https://pokeapi.co/api/v2/pokemon").then(res => {
       const sortedArray = [...res.data.results];
 
       sortedArray.sort((a, b) => {
         return a.name.localeCompare(b.name);
       });
+      const promisesArray = sortedArray.map(item => axios.get(item.url));
 
-      setList(sortedArray);
+      Promise.all(promisesArray).then(value => setList(value));
     });
-  }, []);
+  };
 
+  useEffect(() => {
+    fetchApiData();
+  }, []);
   return (
     <>
       <h3>Desafio Thiago</h3>
       <h1>Consumir api Pokémon</h1>
       <hr />
-      {list.map(item => (
-        <Pokemon key={item.name} data={item} />
-      ))}
+      {list.length === 0
+        ? "carregando Pokémon..."
+        : list.map(item => (
+            <Pokemon key={item.data.name} details={item.data} />
+          ))}
     </>
   );
 }
 
-const Pokemon = ({ data }) => {
-  const [details, setDetails] = useState(null);
-
-  useEffect(() => {
-    axios.get(data.url).then(res => setDetails(res.data));
-  }, []);
-
-  if (!details) {
-    return <div>-</div>;
-  }
-
+const Pokemon = ({ details }) => {
   return (
     <div
       style={{
