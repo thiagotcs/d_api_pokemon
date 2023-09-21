@@ -49,36 +49,33 @@ function App() {
       <hr />
       {list.length === 0
         ? "carregando Pokémon..."
-        : list.map(item => (
-            <Pokemon key={item.data.name} details={item.data} />
-          ))}
+        : list.map(item => {
+            return (
+              <div
+                key={item.data.name}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: 400,
+                  justifyContent: "space-Between",
+                  margin: "0 auto",
+                }}
+              >
+                <span>
+                  <img
+                    src={item.data.sprites.front_default}
+                    alt={item.data.name}
+                    style={{ width: 50, marginLeft: 20 }}
+                  />
+                </span>
+                <span>
+                  <b>{item.data.name}</b> - EXP {item.data.base_experience}
+                </span>
+              </div>
+            );
+          })}
     </>
   );
 }
-
-const Pokemon = ({ details }) => {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        width: 400,
-        justifyContent: "space-Between",
-        margin: "0 auto",
-      }}
-    >
-      <span>
-        <img
-          src={details.sprites.front_default}
-          alt={details.name}
-          style={{ width: 50, marginLeft: 20 }}
-        />
-      </span>
-      <span>
-        <b>{details.name}</b> - EXP {details.base_experience}
-      </span>
-    </div>
-  );
-};
 
 export default App;
