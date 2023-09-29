@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
 /*
  *
  * consuma a API e liste todos os Pokémon da consulta do seguinte endpoint.
@@ -11,7 +8,7 @@ import axios from "axios";
  * - nome
  * - experiência
  *
- * você pode acessar as informaçoes de cada Podémon individualmente em:
+ * você pode acessar as informações de cada Pokémon individualmente em:
  * https://pokeapi.co/api/v2/pokemon/:id
  *
  * DICA:
@@ -23,6 +20,9 @@ import axios from "axios";
  */
 
 // ! 3 resolução do desafio IA
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 function App() {
   const [pokemonList, setPokemonList] = useState([]);
   const [loading, setLoading] = useState(true);
